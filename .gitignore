@@ -110,4 +110,8 @@ venv.bak/
 datasets/downloaded/
 
 # pretrained models
-models/cased_L-24_H-1024_A-16/
+models/xlnet_cased_L-24_H-1024_A-16/
+
+# out file
+exp/
+proc_data/
