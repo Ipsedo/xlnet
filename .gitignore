@@ -102,3 +102,12 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# PyCharm
+.idea/
+
+# dataset
+datasets/downloaded/
+
+# pretrained models
+models/cased_L-24_H-1024_A-16/
