@@ -42,9 +42,8 @@ def write_dataset(data_set, file_name):
         line = lbl + "|||" + data
         out_file.write(line + "\n")
 
-
-if __name__ == "__main__":
-    instances_types = open("/home/samuel/Documents/Stage_SG/dbpedia/instance_types_en.ttl").readlines()[1:]
+def main(type_file, abstract_file, out_file):
+    instances_types = open(type_file).readlines()[1:]
     labels = [l.split(" ")[2].replace("<", "").replace(">", "").split("/")[-1] for l in instances_types]
     titles = [l.split(" ")[0].replace("<", "").replace(">", "").split("/")[-1] for l in instances_types]
 
@@ -54,8 +53,13 @@ if __name__ == "__main__":
 
     print(len(title_to_type))
 
-    long_abstracts = open("/home/samuel/Documents/Stage_SG/dbpedia/long_abstracts_en.ttl").readlines()[1:]
+    long_abstracts = open(abstract_file).readlines()[1:]
 
     dataset = create_dataset(title_to_type, long_abstracts)
 
-    write_dataset(dataset, "dbpedia_pp.txt")
+    write_dataset(dataset, out_file)
+    
+
+if __name__ == "__main__":
+    main("../../data/instance_types_en.ttl", "../../data/long_abstracts_en.ttl", "../../data/dbpedia_pp.txt")
+    

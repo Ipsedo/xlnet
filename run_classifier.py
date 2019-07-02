@@ -429,7 +429,7 @@ class DBPedia(DataProcessor):
         return list(self.labels)
 
     def __parse_file(self):
-        file = open("./datasets/downloaded/dbpedia_pp.txt")
+        file = open("../../data/dbpedia.txt")
 
         examples, labels = [], set()
 
