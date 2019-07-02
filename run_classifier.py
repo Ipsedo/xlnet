@@ -398,6 +398,52 @@ class WikiDumps(DataProcessor):
         return example, label_set
 
 
+class DBPedia(DataProcessor):
+    def __init__(self):
+        self.examples = None
+        self.labels = None
+
+        self.examples, self.labels = self.__parse_file()
+
+        self.ratio_train = 0.7
+        self.ratio_dev = 0.2
+        self.ratio_test = 0.1
+
+        random.shuffle(self.examples)
+
+    def get_train_examples(self, data_dir):
+        limit = int(self.ratio_train * len(self.examples))
+        return self.examples[:limit]
+
+    def get_dev_examples(self, data_dir):
+        limit1 = int(self.ratio_train * len(self.examples))
+        limit2 = int((self.ratio_train + self.ratio_dev) * len(self.examples))
+        return self.examples[limit1:limit2]
+
+    def get_test_examples(self, data_dir):
+        limit1 = int((self.ratio_train + self.ratio_dev) * len(self.examples))
+        limit2 = int((self.ratio_train + self.ratio_dev + self.ratio_test) * len(self.examples))
+        return self.examples[limit1:limit2]
+
+    def get_labels(self):
+        return list(self.labels)
+
+    def __parse_file(self):
+        file = open("./datasets/downloaded/dbpedia_pp.txt")
+
+        examples, labels = [], set()
+
+        for l in file:
+            lbl = l.split("|||")[0]
+            text = l.split("|||")[1]
+
+            inp = InputExample(guid="unused", text_a=text, text_b=None, label=lbl)
+            examples.append(inp)
+
+            labels.add(lbl)
+        return examples, list(labels)
+
+
 def _create_examples(self, lines, set_type):
     """Creates examples for the training and dev sets."""
     examples = []
@@ -698,7 +744,8 @@ def main(_):
         'sts-b': StsbProcessor,
         'imdb': ImdbProcessor,
         "yelp5": Yelp5Processor,
-        "wiki_dump": WikiDumps
+        "wiki_dump": WikiDumps,
+        "dbpedia": DBPedia
     }
 
     if not FLAGS.do_train and not FLAGS.do_eval and not FLAGS.do_predict:
