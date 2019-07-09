@@ -44,6 +44,8 @@ def write_dataset(data_set, file_name):
 
 def main(type_file, abstract_file, out_file):
     instances_types = open(type_file).readlines()[1:]
+    instances_types = [l for l in instances_types if "ontology" in l]
+    
     labels = [l.split(" ")[2].replace("<", "").replace(">", "").split("/")[-1] for l in instances_types]
     titles = [l.split(" ")[0].replace("<", "").replace(">", "").split("/")[-1] for l in instances_types]
 

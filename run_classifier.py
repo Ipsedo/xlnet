@@ -426,18 +426,21 @@ class DBPedia(DataProcessor):
         return self.examples[limit1:limit2]
 
     def get_labels(self):
-        return list(self.labels)
+        return self.labels
 
     def __parse_file(self):
-        file = open("../../data/dbpedia.txt")
+        file = open("../../data/dbpedia_pp_filtered.txt")
 
         examples, labels = [], set()
 
-        for l in file:
-            lbl = l.split("|||")[0]
-            text = l.split("|||")[1]
+        for i, l in enumerate(file):
+            lbl = l.split("|||")[0].strip()
+            text = l.split("|||")[1].strip()
+            
+            if len(text) > 500:
+                continue
 
-            inp = InputExample(guid="unused", text_a=text, text_b=None, label=lbl)
+            inp = InputExample(guid=str(i), text_a=text, text_b=None, label=lbl)
             examples.append(inp)
 
             labels.add(lbl)
