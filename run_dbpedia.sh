@@ -15,8 +15,8 @@ python run_classifier.py \
   --spiece_model_file=${ROOT_DIR}/${LARGE_DIR}/spiece.model \
   --model_config_path=${ROOT_DIR}/${LARGE_DIR}/xlnet_config.json \
   --init_checkpoint=${ROOT_DIR}/${LARGE_DIR}/xlnet_model.ckpt \
-  --max_seq_length=128 \
-  --train_batch_size=4 \
+  --max_seq_length=64 \
+  --train_batch_size=16 \
   --eval_batch_size=8 \
   --predict_batch_size=8 \
   --num_hosts=1 \
