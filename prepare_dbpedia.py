@@ -7,7 +7,7 @@ def filter_things(titles, labels):
     new_labels = []
 
     for t, l in tqdm(zip(titles, labels)):
-        if l != "owl#Thing":
+        if "Thing" not in l:
             new_labels.append(l)
             new_titles.append(t)
     return new_titles, new_labels
@@ -42,18 +42,24 @@ def write_dataset(data_set, file_name):
         line = lbl + "|||" + data
         out_file.write(line + "\n")
 
+
 def main(type_file, abstract_file, out_file):
+    """
+
+    :param type_file:
+    :param abstract_file:
+    :param out_file:
+    :return:
+    """
     instances_types = open(type_file).readlines()[1:]
     instances_types = [l for l in instances_types if "ontology" in l]
-    
-    labels = [l.split(" ")[2].replace("<", "").replace(">", "").split("/")[-1] for l in instances_types]
-    titles = [l.split(" ")[0].replace("<", "").replace(">", "").split("/")[-1] for l in instances_types]
+
+    labels = [re.findall(r"[A-Za-z]+", l.split(" ")[2].replace("<", "").replace(">", ""))[-1] for l in instances_types]
+    titles = [re.findall(r"[A-Za-z]+", l.split(" ")[0].replace("<", "").replace(">", ""))[-1] for l in instances_types]
 
     titles, labels = filter_things(titles, labels)
 
     title_to_type = create_types_dict(titles, labels)
-
-    print(len(title_to_type))
 
     long_abstracts = open(abstract_file).readlines()[1:]
 
@@ -63,5 +69,5 @@ def main(type_file, abstract_file, out_file):
     
 
 if __name__ == "__main__":
-    main("../../data/instance_types_en.ttl", "../../data/long_abstracts_en.ttl", "../../data/dbpedia_pp.txt")
+    main("../../data/instance_types_en.ttl", "../../data/long_abstracts_en.ttl", "../../data/dbpedia_pp_filtered.txt")
     

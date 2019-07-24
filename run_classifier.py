@@ -429,7 +429,7 @@ class DBPedia(DataProcessor):
         return self.labels
 
     def __parse_file(self):
-        file = open("../../data/dbpedia_pp_filtered.txt")
+        file = open("/content/clouderizer/xlnet_fork/data/dbpedia_pp.txt")
 
         examples, labels = [], set()
 
@@ -445,6 +445,79 @@ class DBPedia(DataProcessor):
 
             labels.add(lbl)
         return examples, list(labels)
+
+    
+class DBPedia_filtered(DataProcessor):
+    def __init__(self):
+        self.examples = None
+        self.labels = None
+
+        self.examples, self.labels = self.__parse_file()
+
+        self.ratio_train = 0.7
+        self.ratio_dev = 0.2
+        self.ratio_test = 0.1
+
+        random.shuffle(self.examples)
+        
+        print("NB Class : %d" % len(self.labels))
+
+    def get_train_examples(self, data_dir):
+        limit = int(self.ratio_train * len(self.examples))
+        return self.examples[:limit]
+
+    def get_dev_examples(self, data_dir):
+        limit1 = int(self.ratio_train * len(self.examples))
+        limit2 = int((self.ratio_train + self.ratio_dev) * len(self.examples))
+        return self.examples[limit1:limit2]
+
+    def get_test_examples(self, data_dir):
+        limit1 = int((self.ratio_train + self.ratio_dev) * len(self.examples))
+        limit2 = int((self.ratio_train + self.ratio_dev + self.ratio_test) * len(self.examples))
+        return self.examples[limit1:limit2]
+
+    def get_labels(self):
+        return self.labels
+
+    def __parse_file(self):
+        file = open("../../data/dbpedia_pp_filtered.txt")
+
+        examples, labels = [], []
+        
+        class_count = {}
+
+        for i, l in enumerate(file):
+            lbl = l.split("|||")[0].strip()
+            text = l.split("|||")[1].strip()
+            
+            if len(text.split(" ")) > 500:
+                continue
+
+            examples.append(text)
+            labels.append(lbl)
+            class_count[lbl] = 1 + class_count[lbl] if lbl in class_count else 1
+        
+        examples, labels = self.filter_limit_class(examples, labels, class_count, limit_up=1000, limit_down=50)
+        
+        examples = [InputExample(guid=str(i), text_a=txt, text_b=None, label=lbl) for i, (txt, lbl) in enumerate(zip(examples, labels))]
+            
+        return examples, list(set(labels))
+    
+    def filter_limit_class(self, sentence_list, label_list, class_count, limit_up=5000, limit_down=500):
+        new_sentence = []
+        new_labels = []
+
+        class_counter_up = {}
+
+        for s, l in zip(sentence_list, label_list):
+
+            class_counter_up[l] = 1 + class_counter_up[l] if l in class_counter_up else 1
+
+            if class_count[l] >= limit_down and class_counter_up[l] <= limit_up:
+                new_sentence.append(s)
+                new_labels.append(l)
+
+        return new_sentence, new_labels
 
 
 def _create_examples(self, lines, set_type):
@@ -748,7 +821,8 @@ def main(_):
         'imdb': ImdbProcessor,
         "yelp5": Yelp5Processor,
         "wiki_dump": WikiDumps,
-        "dbpedia": DBPedia
+        "dbpedia": DBPedia,
+        "dbpedia_filtered": DBPedia_filtered
     }
 
     if not FLAGS.do_train and not FLAGS.do_eval and not FLAGS.do_predict:
