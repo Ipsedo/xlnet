@@ -99,7 +99,7 @@ flags.DEFINE_integer("max_save", default=0,
 flags.DEFINE_integer("save_steps", default=None,
                      help="Save the model for every save_steps. "
                           "If None, not to save any model.")
-flags.DEFINE_integer("train_batch_size", default=8,
+flags.DEFINE_integer("train_batch_size", default=1,
                      help="Batch size for training")
 flags.DEFINE_float("weight_decay", default=0.00, help="Weight decay rate")
 flags.DEFINE_float("adam_epsilon", default=1e-8, help="Adam epsilon")

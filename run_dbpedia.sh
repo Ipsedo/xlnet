@@ -1,10 +1,9 @@
-#!/usr/bin/env bash
-
 ROOT_DIR=/content/clouderizer/xlnet_fork/code/xlnet
 LARGE_DIR=models/xlnet_cased_L-24_H-1024_A-16
 
 python run_classifier.py \
   --use-tpu=False \
+  --use-gpu=True \
   --do_train=True \
   --do_eval=True \
   --do-predict=False \
@@ -17,7 +16,7 @@ python run_classifier.py \
   --model_config_path=${ROOT_DIR}/${LARGE_DIR}/xlnet_config.json \
   --init_checkpoint=${ROOT_DIR}/${LARGE_DIR}/xlnet_model.ckpt \
   --max_seq_length=128 \
-  --train_batch_size=1 \
+  --train_batch_size=4 \
   --eval_batch_size=8 \
   --predict_batch_size=8 \
   --num_hosts=1 \
