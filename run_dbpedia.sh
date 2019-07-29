@@ -1,13 +1,16 @@
 ROOT_DIR=/content/clouderizer/xlnet_fork/code/xlnet
 LARGE_DIR=models/xlnet_cased_L-24_H-1024_A-16
 
+export TF_CPP_MIN_LOG_LEVEL=0
+
 python run_classifier.py \
   --use-tpu=False \
   --use-gpu=True \
-  --do_train=True \
-  --do_eval=True \
-  --do-predict=False \
-  --eval_all_ckpt=True \
+  --do_train=False \
+  --do_eval=False \
+  --do_predict=True \
+  --predict_dir=${ROOT_DIR}/exp/dbpedia_filtered/predict \
+  --eval_all_ckpt=False \
   --task_name=dbpedia_filtered \
   --output_dir=${ROOT_DIR}/proc_data/dbpedia_filtered \
   --model_dir=${ROOT_DIR}/exp/dbpedia_filtered \
@@ -15,8 +18,8 @@ python run_classifier.py \
   --spiece_model_file=${ROOT_DIR}/${LARGE_DIR}/spiece.model \
   --model_config_path=${ROOT_DIR}/${LARGE_DIR}/xlnet_config.json \
   --init_checkpoint=${ROOT_DIR}/${LARGE_DIR}/xlnet_model.ckpt \
-  --max_seq_length=64 \
-  --train_batch_size=16 \
+  --max_seq_length=256 \
+  --train_batch_size=8 \
   --eval_batch_size=8 \
   --predict_batch_size=8 \
   --num_hosts=1 \
