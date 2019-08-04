@@ -1,5 +1,6 @@
 from tqdm import tqdm
 import re
+from random import shuffle
 
 
 def filter_things(titles, labels):
@@ -32,6 +33,7 @@ def create_dataset(title_to_type, abstracts):
             data = (title_to_type[title], abst)
             data_set.append(data)
 
+    shuffle(data_set)
     return data_set
 
 
@@ -69,5 +71,7 @@ def main(type_file, abstract_file, out_file):
     
 
 if __name__ == "__main__":
-    main("../../data/instance_types_en.ttl", "../../data/long_abstracts_en.ttl", "../../data/dbpedia_pp_filtered.txt")
+    main("./datasets/downloaded/instance_types_en.ttl",
+         "./datasets/downloaded/long_abstracts_en.ttl",
+         "./datasets/downloaded/dbpedia_pp_filtered.txt")
     
