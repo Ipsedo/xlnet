@@ -803,9 +803,6 @@ def get_model_fn(n_class):
 
 
 def main(_):
-    tf.logging.set_verbosity(tf.logging.INFO)
-
-    #### Validate flags
     if FLAGS.save_steps is not None:
         FLAGS.iterations = min(FLAGS.iterations, FLAGS.save_steps)
 
