@@ -497,9 +497,10 @@ class DBPedia_filtered(DataProcessor):
             labels.append(lbl)
             class_count[lbl] = 1 + class_count[lbl] if lbl in class_count else 1
         
-        examples, labels = self.filter_limit_class(examples, labels, class_count, limit_up=1000, limit_down=50)
+        examples, labels = self.filter_limit_class(examples, labels, class_count, limit_up=1000, limit_down=300)
         
-        examples = [InputExample(guid=str(i), text_a=txt, text_b=None, label=lbl) for i, (txt, lbl) in enumerate(zip(examples, labels))]
+        examples = [InputExample(guid=str(i), text_a=txt, text_b=None, label=lbl)
+                    for i, (txt, lbl) in enumerate(zip(examples, labels))]
             
         return examples, list(set(labels))
     
